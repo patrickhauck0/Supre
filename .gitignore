@@ -48,3 +48,24 @@ app-example
 
 # Antigravity
 .antigravity
+
+# Logs
+logs
+*.log
+pnpm-debug.log*
+lerna-debug.log*
+
+
+api/dist/
+api/build/
+.esbuild/
+
+coverage
+*.lcov
+
+# API
+api/.env
+api/.env.local
+api/.env.development
+api/.env.test
+api/.env.production
