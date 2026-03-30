@@ -55,16 +55,15 @@ logs
 pnpm-debug.log*
 lerna-debug.log*
 
-# Construção e Tipagem
+
 api/dist/
 api/build/
 .esbuild/
 
-# Coverage (Testes)
 coverage
 *.lcov
 
-# Environment da API
+# API
 api/.env
 api/.env.local
 api/.env.development
