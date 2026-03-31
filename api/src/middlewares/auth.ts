@@ -8,7 +8,7 @@ export async function verifyJWT(request: FastifyRequest, reply: FastifyReply) {
     return reply.status(401).send({
       success: false,
       data: null,
-      error: 'Acesso Negado: Nenhum token de autenticação fornecido.',
+      error: 'Access Denied: No authentication token provided.',
     });
   }
 
@@ -20,7 +20,7 @@ export async function verifyJWT(request: FastifyRequest, reply: FastifyReply) {
     return reply.status(401).send({
       success: false,
       data: null,
-      error: 'Sessão expirada ou Token inválido. Faça login no App novamente para gerar um novo.',
+      error: 'Session expired or invalid token. Log in to the app again to generate a new one.',
     });
   }
 
