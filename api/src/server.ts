@@ -3,6 +3,7 @@ import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import Fastify, { FastifyInstance } from 'fastify';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
+import routes from './routes';
 
 export const server: FastifyInstance = Fastify({
   logger: {
@@ -61,6 +62,9 @@ server.setErrorHandler((error: any, request, reply) => {
     error: 'Ocorreu um erro interno no servidor (500). Tente novamente mais tarde.',
   });
 });
+
+// All routes
+server.register(routes);
 
 // Test API
 server.get('/ping', async (request, reply) => {
