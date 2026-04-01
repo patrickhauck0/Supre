@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { Card } from './Card';
 
 export interface ProductCardProps {
@@ -28,11 +28,11 @@ export const ProductCard = ({ name, sku, quantity, minQuantity, price, onPress }
             </Text>
           </View>
         </View>
-        
+
         <View className="flex-row justify-between items-center mt-3 pt-3 border-t border-gray-100">
           <Text className="text-gray-400 text-sm font-medium">Preço Unitário</Text>
           <Text className="text-blue-800 font-bold text-lg">
-            R$ {price.toFixed(2).replace('.', ',')}
+            {price > 0 ? `R$ ${price.toFixed(2).replace('.', ',')}` : 'Preço não definido'}
           </Text>
         </View>
       </Card>
