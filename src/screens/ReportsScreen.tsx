@@ -35,7 +35,7 @@ export const ReportsScreen = () => {
               Visualização Avançada
             </Text>
             <Text className="text-gray-400 text-center px-6 text-sm">
-              Os gráficos analíticos detalhados serão implementados aqui na próxima fase (ex: React Native Chart Kit ou Victory).
+              Em desenvolvimento...
             </Text>
           </Card>
         </View>

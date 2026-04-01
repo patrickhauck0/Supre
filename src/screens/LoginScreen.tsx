@@ -1,13 +1,19 @@
+import { router } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import React, { useEffect } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from '../components/ui/Button';
 import { InputField } from '../components/ui/InputField';
 import { LinceIcon } from '../components/ui/LinceIcon';
+import { useAuthStore } from '../store/authStore';
 
 const videoSource = require('../../assets/videos/login_register_animation.mp4');
 
 export const LoginScreen = () => {
+  const { login, isLoading } = useAuthStore();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   // Background Login Wallpaper
   const player = useVideoPlayer(videoSource, player => {
     player.loop = true;
@@ -17,6 +23,19 @@ export const LoginScreen = () => {
   useEffect(() => {
     player.play();
   }, [player]);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
+    }
+
+    try {
+      await login(email, password);
+    } catch (error: any) {
+      Alert.alert('Erro no Login', error.message);
+    }
+  };
 
   return (
     <View className="flex-1 bg-slate-50">
@@ -53,12 +72,18 @@ export const LoginScreen = () => {
                 placeholder="seu@email.com"
                 keyboardType="email-address"
                 autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
               />
 
               <InputField
                 label="Senha"
                 placeholder="••••••••"
                 secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+                onSubmitEditing={handleLogin}
+                returnKeyType="send"
               />
 
               <View className="w-full items-end mb-6 -mt-2">
@@ -67,11 +92,11 @@ export const LoginScreen = () => {
                 </TouchableOpacity>
               </View>
 
-              <Button label="Entrar" onPress={() => console.log('Login clicked')} />
+              <Button label="Entrar" isLoading={isLoading} onPress={handleLogin} />
 
               <View className="flex-row items-center mt-6">
                 <Text className="text-gray-500">Não tem uma conta? </Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
                   <Text className="text-blue-800 font-bold">Cadastre-se grátis</Text>
                 </TouchableOpacity>
               </View>
