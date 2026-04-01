@@ -1,13 +1,22 @@
+
+import { router } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import React, { useEffect } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from '../components/ui/Button';
 import { InputField } from '../components/ui/InputField';
 import { LinceIcon } from '../components/ui/LinceIcon';
+import { useAuthStore } from '../store/authStore';
 
 const videoSource = require('../../assets/videos/login_register_animation.mp4');
 
 export const RegisterScreen = () => {
+  const { register, isLoading } = useAuthStore();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   // Background Register Wallpaper
   const player = useVideoPlayer(videoSource, player => {
     player.loop = true;
@@ -17,6 +26,27 @@ export const RegisterScreen = () => {
   useEffect(() => {
     player.play();
   }, [player]);
+
+  const handleRegister = async () => {
+    if (!name || !email || !password || !confirmPassword) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Erro', 'As senhas não coincidem.');
+      return;
+    }
+
+    try {
+      await register(name, email, password);
+      Alert.alert('Sucesso', 'Conta criada com sucesso! Faça login para continuar.', [
+        { text: 'OK', onPress: () => router.navigate('/(auth)/login') }
+      ]);
+    } catch (error: any) {
+      Alert.alert('Erro no Cadastro', error.message);
+    }
+  };
 
   return (
     <View className="flex-1 bg-slate-50">
@@ -50,16 +80,24 @@ export const RegisterScreen = () => {
                 </Text>
               </View>
 
-              <InputField label="Nome Completo" placeholder="João Silva" />
-              <InputField label="E-mail" placeholder="joao@exemplo.com" keyboardType="email-address" autoCapitalize="none" />
-              <InputField label="Senha" placeholder="Crie uma senha forte" secureTextEntry />
-              <InputField label="Confirmar Senha" placeholder="Repita a senha" secureTextEntry />
+              <InputField label="Nome Completo" placeholder="João Silva" value={name} onChangeText={setName} />
+              <InputField label="E-mail" placeholder="joao@exemplo.com" keyboardType="email-address" autoCapitalize="none" value={email} onChangeText={setEmail} />
+              <InputField label="Senha" placeholder="Crie uma senha forte" secureTextEntry value={password} onChangeText={setPassword} />
+              <InputField 
+                label="Confirmar Senha" 
+                placeholder="Repita a senha" 
+                secureTextEntry 
+                value={confirmPassword} 
+                onChangeText={setConfirmPassword} 
+                onSubmitEditing={handleRegister}
+                returnKeyType="send"
+              />
 
-              <Button label="Cadastrar" className="mt-4" />
+              <Button label="Cadastrar" className="mt-4" isLoading={isLoading} onPress={handleRegister} />
 
               <View className="flex-row justify-center mt-6">
                 <Text className="text-gray-500">Já possui conta? </Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
                   <Text className="text-blue-800 font-bold">Fazer Login</Text>
                 </TouchableOpacity>
               </View>

@@ -1,13 +1,17 @@
 import { useVideoPlayer, VideoView } from 'expo-video';
 import React, { useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 import { AlertCard } from '../components/ui/AlertCard';
 import { Card } from '../components/ui/Card';
 import { LinceIcon } from '../components/ui/LinceIcon';
+import { useAuthStore } from '../store/authStore';
 
 const videoSource = require('../../assets/videos/login_register_animation.mp4');
 
 export const Dashboard = () => {
+  const { user } = useAuthStore();
+
   const player = useVideoPlayer(videoSource, player => {
     player.loop = true;
     player.muted = true;
@@ -37,14 +41,24 @@ export const Dashboard = () => {
           <View className="flex-row items-center cursor-pointer">
             <LinceIcon size={44} />
           </View>
-          <TouchableOpacity className="bg-white/80 border border-gray-200 p-2.5 rounded-full">
-            <Text className="text-lg leading-none">🔔</Text>
-          </TouchableOpacity>
+          <View className="flex-row items-center gap-3">
+            {/* Avatar */}
+            {user?.avatarUrl ? (
+              <Image source={{ uri: user.avatarUrl }} className="w-10 h-10 rounded-full" contentFit="cover" />
+            ) : (
+              <View className="w-10 h-10 rounded-full bg-blue-800 items-center justify-center">
+                <Text className="text-white font-bold text-lg">{user?.name ? user.name.charAt(0).toUpperCase() : '?'}</Text>
+              </View>
+            )}
+            <TouchableOpacity className="bg-white/80 border border-gray-200 p-2.5 rounded-full">
+              <Text className="text-lg leading-none">🔔</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
       <View className="px-5 mt-6 w-full max-w-6xl md:px-10">
-        <Text className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">Olá, User!</Text>
+        <Text className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">Olá, {user?.name?.split(' ')[0] || 'Usuário'}!</Text>
         <Text className="text-gray-500 mb-6 text-base">Aqui está o resumo do seu estoque hoje.</Text>
 
         {/* Alert */}
